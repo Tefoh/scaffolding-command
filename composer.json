@@ -1,0 +1,36 @@
+{
+    "name": "tefoh/scaffolding-command",
+    "description": "create all necessary files with one command",
+    "keywords": ["laravel", "scaffold"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tefo",
+            "email": "tefo.ha27@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "illuminate/support": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Scaffolding\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Scaffolding\\ScaffoldingServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
