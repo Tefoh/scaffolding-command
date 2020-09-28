@@ -7,24 +7,66 @@ use Illuminate\Filesystem\Filesystem;
 
 class ScaffoldCommand extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'scaffolding {entity : the name of entity}';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'scaffold the entity for all necessary files';
 
+    /**
+     * views need to be generated for crud operation.
+     *
+     * @var string
+     */
+    protected $resourceViews = [
+        'index',
+        'create',
+        'show',
+        'edit',
+    ];
+
+    /**
+     * Execute the console command that create all files.
+     *
+     * @return void
+     */
     public function handle()
     {
-        $this->callSilent('make:model', ['name' => ucfirst($this->argument('entity')), '-a' => true, '--force' => true]);
-        $this->callSilent('make:request', ['name' => ucfirst($this->argument('entity')).'Request']);
-        $this->callSilent('make:test', ['name' => ucfirst($this->argument('entity')).'Test']);
-        $this->callSilent('make:test', ['name' => ucfirst($this->argument('entity')).'Test', '--unit' => true]);
+        $this->callSilent('make:model', [
+            'name' => ucfirst($this->argument('entity')), '-a' => true, '--force' => true
+        ]);
+        $this->callSilent('make:request', [
+            'name' => ucfirst($this->argument('entity')).'Request'
+        ]);
+        $this->callSilent('make:test', [
+            'name' => ucfirst($this->argument('entity')).'Test'
+        ]);
+        $this->callSilent('make:test', [
+            'name' => ucfirst($this->argument('entity')).'Test', '--unit' => true
+        ]);
 
-        if (! (new Filesystem)->isDirectory(resource_path('views/'.strtolower($this->argument('entity'))))) {
-            (new Filesystem)->makeDirectory(resource_path('views/'.strtolower($this->argument('entity'))));
+        $viewResourceDir = 'views/' . strtolower($this->argument('entity'));
+        if (! (new Filesystem)->isDirectory(resource_path($viewResourceDir))) {
+            (new Filesystem)->makeDirectory(resource_path($viewResourceDir));
         }
-        copy(base_path('stubs/index.stub'), resource_path('views/'.strtolower($this->argument('entity')).'/index.blade.php'));
-        copy(base_path('stubs/create.stub'), resource_path('views/'.strtolower($this->argument('entity')).'/create.blade.php'));
-        copy(base_path('stubs/show.stub'), resource_path('views/'.strtolower($this->argument('entity')).'/show.blade.php'));
-        copy(base_path('stubs/edit.stub'), resource_path('views/'.strtolower($this->argument('entity')).'/edit.blade.php'));
+
+        foreach ($this->resourceViews as $view) {
+            if (! (new Filesystem)->isFile(resource_path($viewResourceDir.'/'.$view.'.blade.php')))
+                continue;
+
+            copy(
+                base_path('stubs/'.$view.'.stub'),
+                resource_path($viewResourceDir.'/'.$view.'.blade.php')
+            );
+        }
 
         file_put_contents(
             base_path('routes/web.php'),
