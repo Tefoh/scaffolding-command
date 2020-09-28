@@ -18,3 +18,13 @@
 ```bash
 composer require tefoh/scaffolding-command
 ```
+next
+```bash
+php artisan vendor:publish --tag=scaffolding-stubs
+```
+
+### usage
+```bash
+php artisan scaffolding {your entity name}
+```
+enjoy :)
